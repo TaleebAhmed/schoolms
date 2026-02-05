@@ -76,5 +76,13 @@ class AdmissionStudents extends \yii\db\ActiveRecord
             'previous_class' => 'Previous Class',
         ];
     }
+    public function getApplication()
+{
+    return $this->hasOne(
+        AdmissionApplication::class,
+        ['id' => 'admission_application_id']
+    );
+}
+
 
 }

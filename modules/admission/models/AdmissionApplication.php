@@ -41,7 +41,7 @@ class AdmissionApplication extends \yii\db\ActiveRecord
         return [
             [['father_first_name', 'father_surname', 'father_mobile', 'father_email', 'mother_first_name', 'mother_surname', 'mother_mobile', 'mother_email', 'emergency_contact_name', 'emergency_contact_number', 'relationship_to_student', 'policies'], 'required'],
             [['father_mobile', 'mother_mobile', 'emergency_contact_number'], 'integer'],
-            [['policies'], 'string'],
+            [['policies'], 'safe'],
             [['father_first_name', 'father_surname', 'father_email', 'mother_first_name', 'mother_surname', 'mother_email', 'emergency_contact_name', 'relationship_to_student'], 'string', 'max' => 50],
         ];
     }
@@ -67,5 +67,28 @@ class AdmissionApplication extends \yii\db\ActiveRecord
             'policies' => 'Policies',
         ];
     }
+
+    public function getStudent()
+{
+    return $this->hasOne(
+        AdmissionStudent::class,
+        ['admission_application_id' => 'id']
+    );
+}
+
+public function beforeSave($insert)
+{
+    if (is_array($this->policies)) {
+        $this->policies = json_encode($this->policies);
+    }
+    return parent::beforeSave($insert);
+}
+
+public function afterFind()
+{
+    parent::afterFind();
+    if (!empty($this->policies)) {
+    $this->policies = json_decode($this->policies, true);
+}}
 
 }
