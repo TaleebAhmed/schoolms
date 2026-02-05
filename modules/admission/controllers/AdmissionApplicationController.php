@@ -2,8 +2,10 @@
 
 namespace app\modules\admission\controllers;
 
+use Yii;
 use app\modules\admission\models\AdmissionApplication;
 use app\modules\admission\models\AdmissionApplicationSearch;
+use app\modules\admission\models\AdmissionStudents;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -65,22 +67,23 @@ class AdmissionApplicationController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
-    {
-        $model = new AdmissionApplication();
+   public function actionCreate()
+{
+    $model = new AdmissionApplication();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
-
-        return $this->render('create', [
-            'model' => $model,
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        return $this->redirect([
+            'admission-students/create',
+            'admission_application_id' => $model->id
         ]);
     }
+
+    return $this->render('create', [
+        'model' => $model,
+    ]);
+}
+
+
 
     /**
      * Updates an existing AdmissionApplication model.
