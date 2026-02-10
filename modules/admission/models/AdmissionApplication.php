@@ -81,14 +81,20 @@ public function beforeSave($insert)
     if (is_array($this->policies)) {
         $this->policies = json_encode($this->policies);
     }
+
     return parent::beforeSave($insert);
 }
+
 
 public function afterFind()
 {
     parent::afterFind();
-    if (!empty($this->policies)) {
-    $this->policies = json_decode($this->policies, true);
-}}
+
+    if ($this->policies) {
+        $this->policies = json_decode($this->policies, true);
+    }
+}
+
+
 
 }

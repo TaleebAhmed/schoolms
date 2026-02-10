@@ -41,7 +41,22 @@ $this->params['breadcrumbs'][] = $this->title;
             'emergency_contact_name',
             'emergency_contact_number',
             'relationship_to_student',
-            'policies:ntext',
+            [
+    'attribute' => 'policies',
+    'format' => 'raw',
+    'value' => function ($model) {
+        if (empty($model->policies)) {
+            return '-';
+        }
+
+        $policies = is_array($model->policies)
+            ? $model->policies
+            : json_decode($model->policies, true);
+
+        return '<ul><li>' . implode('</li><li>', $policies) . '</li></ul>';
+    },
+],
+
         ],
     ]) ?>
 
