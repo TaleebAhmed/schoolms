@@ -12,7 +12,13 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'admission_application_id')->textInput() ?>
+    <?= $form->field($model, 'admission_application_id')->hiddenInput()->label(false) ?>
+    <div class="form-group">
+    <label>Parent Name</label>
+    <input type="text" class="form-control" 
+           value="<?= $model->application->father_first_name . ' ' . $model->application->father_surname ?>" 
+           readonly>
+</div>
 
     <?= $form->field($model, 'admission_type')->dropDownList([
     'New admission' => 'New admission',
@@ -23,9 +29,15 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'surname')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'date_of_birth')->textInput(['type' => 'date', 'format' => 'dd-mm-yyyy']) ?>
+    <?= $form->field($model, 'date_of_birth')->textInput([
+    'type' => 'date',
+    'id' => 'dob'
+]) ?>
 
-    <?= $form->field($model, 'age')->textInput() ?>
+    <?= $form->field($model, 'age')->textInput([
+    'id' => 'age',
+    'readonly' => true
+]) ?>
 
     <?= $form->field($model, 'gender')->dropDownList([
     'Male' => 'Male',
@@ -67,5 +79,26 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?php ActiveForm::end(); ?>
+
+    <?php
+$script = <<< JS
+document.getElementById('dob').addEventListener('change', function() {
+    var dob = new Date(this.value);
+    var today = new Date();
+
+    var age = today.getFullYear() - dob.getFullYear();
+    var m = today.getMonth() - dob.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+        age--;
+    }
+
+    document.getElementById('age').value = age;
+});
+JS;
+
+$this->registerJs($script);
+?>
+
 
 </div>
